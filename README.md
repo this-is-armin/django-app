@@ -1,5 +1,5 @@
 # Instaling
-### Run the following comman:
+### Run the following command:
 
 ```shell
 pip install -r requirements.txt
