@@ -19,9 +19,7 @@ class UserSignUpView(View):
 	form_class = UserSignUpForm
 
 	def dispatch(self, request, *args, **kwargs):
-		if request.user.is_authenticated:
-			messages.warning(request, 'You already signed-in.', 'warning')
-			return redirect('app:home')
+		if request.user.is_authenticated: return redirect('app:home')
 		return super().dispatch(request, *args, **kwargs)
 
 	def get(self, request):
@@ -34,7 +32,7 @@ class UserSignUpView(View):
 		if form.is_valid():
 			cd = form.cleaned_data
 			User.objects.create_user(username=cd['username'], email=cd['email'], password=cd['password1'])
-			messages.success(request, 'You have signed-up successfully', 'info')
+			messages.success(request, 'Sign-Up was successful', 'info')
 			return redirect('app:user_sign_in')
 		return render(request, self.template_name, {'form':form})
 
@@ -44,9 +42,7 @@ class UserSignInView(View):
 	form_class = UserSignInForm
 
 	def dispatch(self, request, *args, **kwargs):
-		if request.user.is_authenticated:
-			messages.warning(request, 'You already signed-in.', 'warning')
-			return redirect('app:home')
+		if request.user.is_authenticated: return redirect('app:home')
 		return super().dispatch(request, *args, **kwargs)
 
 	def get(self, request):
@@ -62,32 +58,26 @@ class UserSignInView(View):
 
 			if user is not None:
 				login(request, user)
-				messages.success(request, 'You have signed-in successfully', 'info')
+				messages.success(request, 'Sign-In was successful', 'info')
 				return redirect('app:home')
-			messages.error(request, 'Username or Password is wrong..!', 'danger')
+			messages.error(request, 'Username or Password incorrect', 'danger')
 			return redirect('app:user_sign_in')
 		return render(request, self.template_name, {'form':form})
 
 
 def user_signout_view(request):
-	if not request.user.is_authenticated:
-		messages.warning(request, 'You not have signed-in..!', 'warning')
-		return redirect('app:home')
+	if not request.user.is_authenticated: return redirect('app:home')
 	logout(request)
-	messages.success(request, 'You have signed-out successfully', 'info')
+	messages.success(request, 'Sign-Out was successful', 'info')
 	return redirect('app:home')
 
 
 def user_delete_view(request, username):
 	user = get_object_or_404(User, username=username)
-	if not request.user.is_authenticated:
-		messages.warning(request, 'You not have signed-in..!', 'warning')
-		return redirect('app:home')
-	if request.user != user:
-		messages.error(request, 'You can not delete this user..!', 'danger')
-		return redirect('app:user_page', user.username)
+	if not request.user.is_authenticated: return redirect('app:home')
+	if request.user != user: return redirect('app:user_page', user.username)
 	user.delete()
-	messages.success(request, 'You have deleted the account successfully.', 'info')
+	messages.success(request, 'Account was deleted successful', 'info')
 	return redirect('app:home')
 
 
@@ -99,9 +89,7 @@ class UserPageView(View):
 		return super().setup(request, *args, **kwargs)
 
 	def dispatch(self, request, *args, **kwargs):
-		if not request.user.is_authenticated:
-			messages.warning(request, 'You not have signed-in..!', 'warning')
-			return redirect('app:home')
+		if not request.user.is_authenticated: return redirect('app:home')
 		return super().dispatch(request, *args, **kwargs)
 
 	def get(self, request, **kwargs):
@@ -118,11 +106,8 @@ class UserUpdateView(View):
 		return super().setup(request, *args, **kwargs)
 
 	def dispatch(self, request, *args, **kwargs):
-		if not request.user.is_authenticated:
-			messages.warning(request, 'You not have signed-in.', 'warning')
-			return redirect('app:home')
-		if request.user != self.user_instance:
-			messages.error(request, 'You can not update the user info..!', 'danger')
+		if not request.user.is_authenticated: return redirect('app:home')
+		if request.user != self.user_instance: return redirect('app:user_page', self.user_instance.username)
 		return super().dispatch(request, *args, **kwargs)
 
 	def get(self, request, **kwargs):
@@ -139,9 +124,8 @@ class UserUpdateView(View):
 			cd = form.cleaned_data
 			user.email = cd['email']
 			user.save()
-			messages.success(request, 'You have updated the account info successfully', 'info')
+			messages.success(request, 'Account was updated successful', 'info')
 			return redirect('app:user_page', user.username)
 		return render(request, self.template_name, {'form':form, 'user':user})
 
 #######################################################
-
