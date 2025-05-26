@@ -7,7 +7,7 @@ from django.views import View
 from .forms import UserSignUpForm, UserSignInForm, UserUpdateForm
 
 
-def home(request):
+def home_view(request):
 	return render(request, 'base/index.html')
 
 
