@@ -1,4 +1,3 @@
-// ----- Hiding Messages ----------
 function hiding_message() {
 	let message = document.getElementById('message');
 

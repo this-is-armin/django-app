@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} Delete Account {% endblock %}
+
+{% block content %}
+
+<h4 class="text-center">To delete your account, type your username: <span class="text-danger">'{{ request.user.username }}'</span></h4>
+
+<form action="" method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" value="Delete Account" class="btn btn-info">
+</form>
+
+{% endblock %}
