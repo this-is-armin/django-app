@@ -1,4 +1,4 @@
-# Instaling
+# Installing
 ### Run the following command:
 
 ```shell
